@@ -1,12 +1,12 @@
 import React from 'react'
 import '../menu-item/menu-item.styles.scss'
-import { sign } from 'crypto';
+import { withRouter } from 'react-router-dom'
 
 
-const MenuItem = ({ title, imageUrl, size }) => {
-
+const MenuItem = (props) => {
+    let { title, imageUrl, size,linkUrl,history,match }= props;
     return (
-        <div className={`menu-item ${size}`} >
+        <div className={`menu-item ${size}`}  onClick={()=> history.push(`${match.url}${linkUrl}`)} >
             <div
                 className='background-image'
                 style={{ backgroundImage: `url(${imageUrl})` }}
@@ -19,5 +19,5 @@ const MenuItem = ({ title, imageUrl, size }) => {
     )
 }
 
-export default MenuItem;
+export default withRouter(MenuItem);
 
