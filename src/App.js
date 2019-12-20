@@ -8,7 +8,7 @@ import ShopPage from './pages/shoppage/shoppage.component'
 import Header from './components/header/header.component'
 import LoginPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component'
 
-import {auth,firestore} from './firebase/firebase.utils'
+import {auth,createUserProfileDocument} from './firebase/firebase.utils'
 
 
 class App extends Component {
@@ -16,19 +16,31 @@ class App extends Component {
   constructor(){
     super();
     this.state={
-      user:null,
-      username:''
+      user:null
     }
   }
 
   unsubscribeFromAuthStateChange=null;
 
  componentDidMount() {
-   this.unsubscribeFromAuthStateChange= auth.onAuthStateChanged(userFromFirebase => {
-     this.setState({
-      user:userFromFirebase
-     })
-   console.log(this.state.user);
+   this.unsubscribeFromAuthStateChange= auth.onAuthStateChanged(async userAuthFromFirebase => {
+     
+    if(userAuthFromFirebase){
+      const userDocRef = await createUserProfileDocument(userAuthFromFirebase);
+       
+      userDocRef.onSnapshot(snapshot=>{
+        console.log(snapshot.data())
+        this.setState({
+          user:{
+            id:snapshot.id,
+            ...snapshot.data()
+          }
+        })
+      })
+    }
+    else
+     this.setState({user:userAuthFromFirebase})
+   
    });
  }
 
