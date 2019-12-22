@@ -6,8 +6,11 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { auth } from "../../firebase/firebase.utils";
 
+import CartIcon from "../cart-icon/cart-icon.component";
+import CartDropdown from "../cart-dropdown/cart-dropdown.component";
+
 const Header = props => {
-  const { currentUser } = props;
+  const { currentUser, hidden } = props;
   console.log("header props", props);
   return (
     <div className="header">
@@ -30,14 +33,17 @@ const Header = props => {
             SIGN IN
           </Link>
         )}
+        <CartIcon />
       </div>
+      {hidden ? <CartDropdown /> : null}
     </div>
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = ({ user: { currentUser }, cart: { hidden } }) => {
   return {
-    currentUser: state.user.currentUser
+    currentUser,
+    hidden
   };
 };
 
