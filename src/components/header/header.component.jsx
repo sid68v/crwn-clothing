@@ -11,7 +11,6 @@ import CartDropdown from "../cart-dropdown/cart-dropdown.component";
 
 const Header = props => {
   const { currentUser, hidden } = props;
-  console.log("header props", props);
   return (
     <div className="header">
       <Link className="logo-container" to="/">
@@ -35,7 +34,7 @@ const Header = props => {
         )}
         <CartIcon />
       </div>
-      {hidden ? <CartDropdown /> : null}
+      {hidden ? null : <CartDropdown />}
     </div>
   );
 };

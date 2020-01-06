@@ -48,7 +48,7 @@ class App extends Component {
           <Route exact path="/" component={HomePage} />
           <Route path="/shop" component={ShopPage} />
           <Route
-            exact
+            exact 
             path="/login"
             render={() =>
               this.props.currentUser ? <Redirect to="/" /> : <LoginPage />
