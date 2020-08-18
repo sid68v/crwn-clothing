@@ -28,6 +28,39 @@ googleSignInProvider.setCustomParameters({
 export const SignInWithGoogle = () =>
   auth.signInWithPopup(googleSignInProvider);
 
+export const addCollectionAndDocuments = async (
+  collectionKey,
+  objectsToAdd
+) => {
+  const collectionRef = firestore.collection(collectionKey);
+
+  const batch = firestore.batch();
+
+  objectsToAdd.forEach((item) => {
+    const docRef = collectionRef.doc(item.title);
+    batch.set(docRef, item);
+  });
+
+  return await batch.commit();
+};
+
+export const convertCollectionsSnapshotTomap = (collections) => {
+  const mappedCollections = collections.docs.map((doc) => {
+    const { title, items } = doc.data();
+    return {
+      title,
+      items,
+      id: doc.id,
+      routeName: encodeURI(title.toLowerCase()),
+    };
+  });
+
+  return mappedCollections.reduce((acc, collection) => {
+    acc[collection.title.toLowerCase()] = collection;
+    return acc;
+  }, {});
+};
+
 export const createUserProfileDocument = async (userAuth, additionalData) => {
   if (!userAuth) return;
 

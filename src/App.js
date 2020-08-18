@@ -11,30 +11,47 @@ import Header from "./components/header/header.component";
 import LoginPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up.component";
 import CheckoutPage from "./pages/checkout/checkout.component";
 
-import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
+import {
+  auth,
+  createUserProfileDocument,
+  addCollectionAndDocuments,
+} from "./firebase/firebase.utils";
 import { setCurrentUser } from "./redux/user/user.actions";
 import { selectorCurrentUser } from "./redux/user/user.selectors";
+import { selectCollectionsForPreview } from "./redux/shop/shop.selectors";
+import { findAllByTitle } from "@testing-library/react";
 
 class App extends Component {
   unsubscribeFromAuthStateChange = null;
 
   componentDidMount() {
-    const { setCurrentUser } = this.props;
+    const { setCurrentUser, collectionsArray } = this.props;
     this.unsubscribeFromAuthStateChange = auth.onAuthStateChanged(
-      async userAuthFromFirebase => {
+      async (userAuthFromFirebase) => {
         if (userAuthFromFirebase) {
           const userDocRef = await createUserProfileDocument(
             userAuthFromFirebase
           );
 
-          userDocRef.onSnapshot(snapshot => {
+          userDocRef.onSnapshot((snapshot) => {
             console.log(snapshot.data());
             setCurrentUser({
               id: snapshot.id,
-              ...snapshot.data()
+              ...snapshot.data(),
             });
           });
         } else setCurrentUser(userAuthFromFirebase);
+
+        // adding the data to firestore programmatically.
+        // addCollectionAndDocuments(
+        //   "collections",
+        //   collectionsArray.map((item) => {
+        //     return {
+        //       title: item.title,
+        //       items: item.items,
+        //     };
+        //   })
+        // );
       }
     );
   }
@@ -65,12 +82,13 @@ class App extends Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  currentUser: selectorCurrentUser
+  currentUser: selectorCurrentUser,
+  collectionsArray: selectCollectionsForPreview,
 });
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    setCurrentUser: user => dispatch(setCurrentUser(user))
+    setCurrentUser: (user) => dispatch(setCurrentUser(user)),
   };
 };
 
