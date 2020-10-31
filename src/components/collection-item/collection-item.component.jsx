@@ -7,7 +7,7 @@ import { addItem } from "../../redux/cart/cart.actions";
 
 import CustomButton from "../custom-button/custom-button.component";
 
-const CollectionItem = props => {
+const CollectionItem = (props) => {
   const { item, addItem } = props;
   const { imageUrl, price, name } = item;
   return (
@@ -17,16 +17,20 @@ const CollectionItem = props => {
         <span className="name">{name}</span>
         <span className="price">{price}</span>
       </div>
-      <CustomButton onClick={() => addItem(item)} inverted>
+      <CustomButton
+        style={{ position: "absolute", margin: "150px 0 0 0" }}
+        onClick={() => addItem(item)}
+        inverted
+      >
         ADD TO CART
       </CustomButton>
     </div>
   );
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    addItem: item => dispatch(addItem(item))
+    addItem: (item) => dispatch(addItem(item)),
   };
 };
 
