@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
@@ -11,54 +10,18 @@ import Header from "./components/header/header.component";
 import LoginPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up.component";
 import CheckoutPage from "./pages/checkout/checkout.component";
 
-import {
-  auth,
-  createUserProfileDocument,
-  addCollectionAndDocuments,
-} from "./firebase/firebase.utils";
-import { setCurrentUser } from "./redux/user/user.actions";
+import { checkUserSession } from "./redux/user/user.actions";
 import { selectorCurrentUser } from "./redux/user/user.selectors";
 import { selectCollectionsForPreview } from "./redux/shop/shop.selectors";
-import { findAllByTitle } from "@testing-library/react";
 
 class App extends Component {
   unsubscribeFromAuthStateChange = null;
 
   componentDidMount() {
-    const { setCurrentUser, collectionsArray } = this.props;
-    this.unsubscribeFromAuthStateChange = auth.onAuthStateChanged(
-      async (userAuthFromFirebase) => {
-        if (userAuthFromFirebase) {
-          const userDocRef = await createUserProfileDocument(
-            userAuthFromFirebase
-          );
-
-          userDocRef.onSnapshot((snapshot) => {
-            console.log(snapshot.data());
-            setCurrentUser({
-              id: snapshot.id,
-              ...snapshot.data(),
-            });
-          });
-        } else setCurrentUser(userAuthFromFirebase);
-
-        // adding the data to firestore programmatically.
-        // addCollectionAndDocuments(
-        //   "collections",
-        //   collectionsArray.map((item) => {
-        //     return {
-        //       title: item.title,
-        //       items: item.items,
-        //     };
-        //   })
-        // );
-      }
-    );
+    this.props.checkUserSession();
   }
 
-  componentWillUnmount() {
-    this.unsubscribeFromAuthStateChange();
-  }
+  componentWillUnmount() {}
 
   render() {
     return (
@@ -88,7 +51,7 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+    checkUserSession: () => dispatch(checkUserSession()),
   };
 };
 

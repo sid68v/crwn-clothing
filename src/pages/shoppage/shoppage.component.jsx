@@ -6,7 +6,7 @@ import { Route } from "react-router-dom";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 
-import { fetchCollectionsStartAsync } from "../../redux/shop/shop.actions";
+import { fetchCollectionsStart } from "../../redux/shop/shop.actions";
 
 import CollectionOverViewContainer from "../../components/collection-overview/collection-overview.container";
 import CollectionPageContainer from "../collection/collection.page.container";
@@ -14,7 +14,7 @@ import CollectionPageContainer from "../collection/collection.page.container";
 class ShopPage extends Component {
   unsubscribeFromSnapshot = null;
   componentDidMount() {
-    this.props.fetchCollectionsStartAsync();
+    this.props.fetchCollectionsStart();
   }
 
   render() {
@@ -37,7 +37,7 @@ class ShopPage extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchCollectionsStartAsync: () => dispatch(fetchCollectionsStartAsync()),
+    fetchCollectionsStart: () => dispatch(fetchCollectionsStart()),
   };
 };
 export default connect(null, mapDispatchToProps)(ShopPage);
